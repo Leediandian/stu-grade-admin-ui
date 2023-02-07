@@ -44,7 +44,7 @@
           <span>{{ parseOperationStatus(scope.row.operationStatus) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="反馈" align="center" prop="feedback" />
+      <el-table-column label="反馈" align="center" prop="feedback" show-overflow-tooltip />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
@@ -62,13 +62,23 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="异议成绩" prop="gradeId">
-          <el-select v-model="form.gradeId" filterable clearable placeholder="请选择异议成绩">
+          <el-select v-model="form.gradeId" filterable clearable placeholder="请选择异议成绩"
+            :disabled="user.roles[0].roleName == '教师'">
             <el-option v-for="item in gradeList" :key="item.gradeId"
               :label="`${item.stuName}-${item.courseName}-${item.scoreGrades}分`" :value="item.gradeId" />
           </el-select>
         </el-form-item>
         <el-form-item label="成绩异议说明" prop="gradeObjDesc">
-          <el-input v-model="form.gradeObjDesc" placeholder="请输入成绩异议说明" />
+          <el-input v-model="form.gradeObjDesc" placeholder="请输入成绩异议说明" :disabled="user.roles[0].roleName == '教师'" />
+        </el-form-item>
+        <el-form-item label="处理状态" prop="operationStatus" v-if="this.form.gradeObjId && user.roles[0].roleName != '学生'">
+          <el-select v-model="form.operationStatus" filterable clearable placeholder="请选择处理状态">
+            <el-option v-for="item in statusList" :key="item.gradeId" :label="`${item.label}`" :disabled="item.disabled"
+              :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="反馈说明" prop="feedback" v-if="user.roles[0].roleName != '学生'">
+          <el-input v-model="form.feedback" placeholder="请输入成绩异议反馈说明" type="textarea" rows="4" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -128,14 +138,21 @@ export default {
           { required: true, message: "成绩异议说明不能为空", trigger: "blur" }
         ],
         operationStatus: [
-          { required: true, message: "处理状态不能为空", trigger: "blur" }
-        ]
+          { required: false, message: "处理状态不能为空", trigger: "change" }
+        ],
+        feedback: [
+          { required: true, message: "反馈说明不能为空", trigger: "blur" }
+        ],
+
       },
       // 处理状态
       operationStatusList: [
         { label: '待处理', value: '0' },
-        { label: '处理中', value: '1' },
-        { label: '已处理', value: '2' },
+        { label: '已处理', value: '1' },
+      ],
+      statusList: [
+        { label: '待处理', value: '0', disabled: true },
+        { label: '已处理', value: '1' },
       ],
     };
   },

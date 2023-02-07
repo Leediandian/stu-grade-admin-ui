@@ -54,7 +54,7 @@
 
     <el-table v-loading="loading" :data="gradeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <!-- <el-table-column label="课程明细编号" align="center" prop="gradeId" /> -->
+      <el-table-column label="成绩编号" align="center" prop="gradeId" />
       <el-table-column label="班级名称" align="center" prop="className" />
       <el-table-column label="学生姓名" align="center" prop="stuName" />
       <el-table-column label="课程名称" align="center" show-overflow-tooltip prop="courseName" sortable />
@@ -77,8 +77,8 @@
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" :disabled="scope.row.scoreGrades != null"
             @click="handleUpdateForTeacher(scope.row)" v-hasPermi="['system:grade:edit']">录入成绩</el-button>
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:grade:edit']">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" v-if="user.roles[0].roleName == '教师'"
+            @click="handleUpdate(scope.row)" v-hasPermi="['system:grade:edit']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
             v-hasPermi="['system:grade:remove']">删除</el-button>
         </template>

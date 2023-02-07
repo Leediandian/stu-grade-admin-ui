@@ -55,7 +55,7 @@
           <span>{{ getExamType(scope.row.examType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="考试描述" align="center" prop="examDesc" />
+      <el-table-column label="考试描述" show-overflow-tooltip align="center" prop="examDesc" />
       <el-table-column label="课程名称" align="center" prop="courseName" />
       <el-table-column label="安排时间" align="center" prop="scheduleTime" width="180">
         <template slot-scope="scope">
